@@ -3,7 +3,7 @@ import { todoDB } from "../local-db/todo.db";
 import type { AuthRequest } from '../middleware/auth.middleware';
 
 // Create a todo from request
-export const createTodo = (req: AuthRequest, res: Response) => {
+export const createTodo = async (req: AuthRequest, res: Response) => {
 
     const userId = req.user?.userId;
     if (!userId){
@@ -17,7 +17,7 @@ export const createTodo = (req: AuthRequest, res: Response) => {
 };
 
 // Get all todos
-export const getAllTodos = (req: Request, res: Response) => {
+export const getAllTodos = async (req: Request, res: Response) => {
     const todos = todoDB.getAllTodos();
 
     // Begin Filtering array of Todos
@@ -45,7 +45,7 @@ export const getAllTodos = (req: Request, res: Response) => {
 };
 
 // Update a todo
-export const updateTodo = (req: AuthRequest, res: Response) => {
+export const updateTodo = async (req: AuthRequest, res: Response) => {
     const userId = req.user?.userId;
     if (!userId){
         return res.status(401).json({ message: "Unauthorized: No token provided" });
@@ -68,7 +68,7 @@ export const updateTodo = (req: AuthRequest, res: Response) => {
 };
 
 // Delete a todo
-export const deleteTodo = (req: AuthRequest, res: Response) => {
+export const deleteTodo = async (req: AuthRequest, res: Response) => {
     const userId = req.user?.userId;
     if (!userId){
         return res.status(401).json({ message: "Unauthorized: No token provided" });

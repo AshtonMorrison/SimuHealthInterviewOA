@@ -15,19 +15,19 @@ export const createUser = async (req: Request, res: Response) => {
     const hashedPass = await bcrypt.hash(password, 12)
     const newUser = userDB.createUser(username, hashedPass);
 
-    res.status(201).json({ newUser });
+    res.status(201).json({ Id: newUser.id, username: newUser.username });
 };
 
 export const loginUser = async (req: Request, res: Response) => {
     const { username, password } = req.body;
     const user = userDB.getUserByUsername(username);
     if (!user) {
-        return res.status(401).json({ message: "Username doesn't exist exists" })
+        return res.status(401).json({ message: "Invalid username or password" })
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-        return res.status(401).json({ message: "Invalid password" });
+        return res.status(401).json({ message: "Invalid username or password" });
     }
 
     const jwtToken = jwt.sign(
