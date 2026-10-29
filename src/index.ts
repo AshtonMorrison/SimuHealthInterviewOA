@@ -4,8 +4,8 @@ const app = express();
 const PORT: number = 3000;
 app.use(express.json());
 
-app.get('/', (_req, res) => {
-  res.send('Hello World!');
+app.get('/test', (req, res) => {
+    res.send('This is a test');
 });
 
 app.listen(PORT, (): void => {
