@@ -19,13 +19,29 @@ export const createTodo = (req: AuthRequest, res: Response) => {
 // Get all todos
 export const getAllTodos = (req: Request, res: Response) => {
     const todos = todoDB.getAllTodos();
-    if (!todos.length){
+
+    // Begin Filtering array of Todos
+    const filterCompleted = typeof req.query.completed === "string" ? req.query.completed : undefined;
+    const filterDescription = typeof req.query.description === "string" ? req.query.description : undefined;
+
+    const filteredTodos = todos.filter((todo) => {
+
+        // Filter by completed
+        if (filterCompleted && todo.completed !== (filterCompleted === "true")) { return false; }
+
+        // Filter by description
+        if (filterDescription && !todo.description.toLowerCase().includes(filterDescription.toLowerCase())) { return false; }
+
+        return true;
+    });
+
+    if (!filteredTodos.length){
         res.json({ 
             message: "No todos available", 
         });
         return;
     }
-    res.json(todos);
+    res.json(filteredTodos);
 };
 
 // Update a todo
