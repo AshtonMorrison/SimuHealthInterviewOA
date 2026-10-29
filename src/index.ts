@@ -17,6 +17,13 @@ app.use((_req, res) => {
     });
 });
 
+// Health Check
+app.use('/health', (_req, res) => {
+    res.status(200).json({
+        message: "Health Good",
+    });
+});
+
 // Error handling middleware
 app.use(errorMiddleware);
 
