@@ -15,7 +15,7 @@ export const createUser = async (req: Request, res: Response) => {
     const hashedPass = await bcrypt.hash(password, 12)
     const newUser = userDB.createUser(username, hashedPass);
 
-    res.status(201).json({ newUser });
+    res.status(201).json({ Id: newUser.id, username: newUser.username });
 };
 
 export const loginUser = async (req: Request, res: Response) => {
