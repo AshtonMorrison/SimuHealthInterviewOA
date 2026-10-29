@@ -21,9 +21,12 @@ class TodoDB {
     }
 
     // Update todo
-    updateTodo(id: string, updatedInfo: Partial<Todo>): Todo | null {
+    updateTodo(id: string, owner: string, updatedInfo: Partial<Todo>): Todo | null {
         const existingTodo = this.todoMap.get(id);
         if (!existingTodo) {
+            return null;
+        }
+        if (existingTodo.owner !== owner) {
             return null;
         }
 
@@ -34,7 +37,11 @@ class TodoDB {
     }
 
     // Delete todo
-    deleteTodo(id: string): boolean {
+    deleteTodo(id: string, owner: string): boolean {
+        const existingTodo = this.todoMap.get(id);
+        if (!existingTodo || existingTodo.owner !== owner) {
+            return false;
+        }
         return this.todoMap.delete(id);
     }
 }

@@ -1,12 +1,17 @@
 import type { Request, Response } from "express";
 import { todoDB } from "../local-db/todo.db";
+import type { AuthRequest } from '../middleware/auth.middleware';
 
 // Create a todo from request
-export const createTodo = (req: Request, res: Response) => {
+export const createTodo = (req: AuthRequest, res: Response) => {
+
+    const userId = req.user?.userId;
+    if (!userId){
+        return res.status(401).json({ message: "Unauthorized: No token provided" });
+    }
     const { description } = req.body;
 
-    // set owner to User1 for now
-    const todo = todoDB.createTodo("user1", description);
+    const todo = todoDB.createTodo(userId, description);
 
     res.status(201).json(todo);
 };
@@ -24,18 +29,22 @@ export const getAllTodos = (req: Request, res: Response) => {
 };
 
 // Update a todo
-export const updateTodo = (req: Request, res: Response) => {
-    const { id } = req.params;
+export const updateTodo = (req: AuthRequest, res: Response) => {
+    const userId = req.user?.userId;
+    if (!userId){
+        return res.status(401).json({ message: "Unauthorized: No token provided" });
+    }
 
+    const { id } = req.params;
     if (typeof id !== "string") {
         res.status(400).json({ message: "Invalid todo id" });
         return;
     }
 
-    const updatedTodo = todoDB.updateTodo(id, req.body);
+    const updatedTodo = todoDB.updateTodo(id, userId, req.body);
 
     if (!updatedTodo) {
-        res.status(404).json({ message: "Todo not found" });
+        res.status(404).json({ message: "No todo found with provided id under provided userId" });
         return;
     }
 
@@ -43,22 +52,24 @@ export const updateTodo = (req: Request, res: Response) => {
 };
 
 // Delete a todo
-export const deleteTodo = (req: Request, res: Response) => {
-    const { id } = req.params;
+export const deleteTodo = (req: AuthRequest, res: Response) => {
+    const userId = req.user?.userId;
+    if (!userId){
+        return res.status(401).json({ message: "Unauthorized: No token provided" });
+    }
 
+    const { id } = req.params;
     if (typeof id !== "string") {
         res.status(400).json({ message: "Invalid todo id" });
         return;
     }
 
-    const deleted = todoDB.deleteTodo(id);
+    const deleted = todoDB.deleteTodo(id, userId);
 
     if (!deleted) {
-        res.status(404).json({ message: "Todo not found" });
+        res.status(404).json({ message: "No todo found with provided id under provided userId" });
         return;
     }
 
-    res.json({
-        message: "Todo deleted successfully",
-    });
+    res.json({ message: "Todo deleted successfully" });
 };
