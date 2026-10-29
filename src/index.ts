@@ -1,12 +1,13 @@
 import express from 'express';
 import todoRoutes from './routes/todo.route';
-
+import userRoutes from './routes/user.route';
 
 const app = express();
 const PORT: number = 3000;
 
 app.use(express.json());
 app.use('/todo', todoRoutes);
+app.use('/user', userRoutes);
 
 app.get('/test', (req, res) => {
     res.send('This is a test');

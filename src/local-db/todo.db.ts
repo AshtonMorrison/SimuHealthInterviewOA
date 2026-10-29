@@ -10,7 +10,7 @@ class TodoDB {
             owner,
             description,
             completed: false,
-        }
+        };
         this.todoMap.set(todoTask.id, todoTask);
         return todoTask;
     }
